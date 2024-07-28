@@ -1,8 +1,13 @@
 const {PORT} = require("./constants.js");
 const express = require('express');
 const cors = require('cors');
+const ConnectDB = require('./src/db/connection.js');
+const rootRouter = require('./src/routes/root.js')
+const contactUsRouter = require('./src/routes/contactUs.js')
 
 if(require.main === module){
+    ConnectDB();
+
     const app = express();
     app.use(express.json());
     app.use(cors({
@@ -14,7 +19,6 @@ if(require.main === module){
         console.log(`localhost:${PORT}`);
     });
 
-    app.get("/", (req,res) => {
-        res.send("Welcome to unicorn server");
-    });
+    app.use('/', rootRouter);
+    app.use('/contactUs',contactUsRouter);
 }
