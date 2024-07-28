@@ -7,4 +7,8 @@ const login = async (req, res) => {
 
 };
 
-module.exports = {signUp, login};
+const verify = async (req, res) => {
+
+};
+
+module.exports = {signUp, login, verify};
