@@ -10,9 +10,9 @@ const signUp = async (req, res) => {
     try {
         const user = await User.findOne({email});
         if(!user) {
-            const hashedPassword = bcrypt.hash(password, 10);
+            const hashedPassword = await bcrypt.hash(password, 10);
 
-            const newUser = await User({name, email, hashedPassword});
+            const newUser = await User({name, email, password : hashedPassword});
             newUser.save();
 
             const token = jwt.sign({email}, SECRETKEY, { expiresIn: "24h" });
@@ -53,11 +53,44 @@ const signUp = async (req, res) => {
 };
 
 const login = async (req, res) => {
+    const {email ,password} = req.body;
 
+    try {
+        const user = await User.findOne({email});
+
+        if(user) {
+            const validate = await bcrypt.compare(password, user.password);
+
+            if(validate) {
+                const token = jwt.sign({email}, SECRETKEY, { expiresIn: "24h" });
+                res.status(201).json({token, email, message: "Logedin successfully!" });
+            } else {
+                res.send("Incorrect Password!");
+            }
+
+        } else {
+            res.send("Create account first!");
+        }
+
+    } catch (error) {
+        res.status(500).send("Login Failed!");
+    }
 };
 
 const verify = async (req, res) => {
+    const token = req.body.token;
 
+    if (!token) {
+        return res.status(400).send({ login: false, data: "Token is required" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, SECRETKEY);
+        res.status(200).send({ login: true, data: decoded });
+    } catch (error) {
+        console.error('Token verification error:', error);
+        res.status(401).send({ login: false, data: "Login unsuccessful" });
+    }
 };
 
 module.exports = {signUp, login, verify};
