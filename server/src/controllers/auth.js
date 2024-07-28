@@ -1,6 +1,6 @@
 
 const signUp = async (req, res) => {
-
+    
 };
 
 const login = async (req, res) => {
