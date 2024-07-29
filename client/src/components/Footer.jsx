@@ -26,10 +26,9 @@ const Footer = () => {
             }),
             headers: {"Content-type": "application/json; charset=UTF-8",},
         })
-
-        const data = await res.json();
     
         if(res.status == 200) {    
+            const data = await res.json();
             console.log("response true");
             localStorage.setItem("token", data.token);
             localStorage.setItem("email", data.email);
