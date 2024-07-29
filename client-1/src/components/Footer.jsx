@@ -33,8 +33,8 @@ const Footer = () => {
             localStorage.setItem("token", data.token);
             localStorage.setItem("email", data.email);
             toast.success("SignUp successfull!");
+            setTimeout(() => {}, 5000);
             navigate('/dashboard');
-
         } else if(res.status == 400) {
             toast.error("Account already exists");
         } else {
