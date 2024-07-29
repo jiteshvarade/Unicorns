@@ -43,6 +43,37 @@ const Footer = () => {
         } 
     }
 
+    const login = async (e) => {
+        e.preventDefault();
+        if(!email || !password) {
+            toast.error("Please fill the required credentials");
+            return
+        }
+        const res = await fetch(`${SERVER_URL}/auth/login`,
+        {
+            method:"POST",
+            body:JSON.stringify({
+                email,
+                password,
+            }),
+            headers: {"Content-type": "application/json; charset=UTF-8",},
+        })
+    
+        if(res.status == 200) {    
+            const data = await res.json();
+            console.log("response true");
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("email", data.email);
+            toast.success("Login successfull!");
+            setTimeout(() => {}, 5000);
+            navigate('/dashboard');
+        } else if(res.status == 401) {
+            toast.error("Incorrect Password!");
+        } else {
+            toast.error("Failed to Login");
+        } 
+    }
+
     return (
         <footer className="SeventhSection text-white font-Sora bg-black py-10">
             <div className="max-w-[90vw] mx-auto flex flex-col lg:flex-row lg:justify-between md:items-center gap-10">
@@ -138,6 +169,13 @@ const Footer = () => {
                     > 
                         SIGN ME UP 
                     </button>
+                    <button 
+                        className='px-4 py-2 bg-green-900 text-white text-sm md:text-base font-bold rounded' 
+                        onClick={login} 
+                    > 
+                        Login
+                    </button>
+
                     <ToastContainer />
                 </div>
             </div>
