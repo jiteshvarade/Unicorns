@@ -40,10 +40,10 @@ const signUp = async (req, res) => {
             await sendEmail(email, subject, html);
 
             console.log("Account created successfully!");
-            res.status(201).json({token, email, message: "Account created successfully!" });
+            res.status(200).send({token, email, message: "Account created successfully!" });
 
         } else {
-            res.send("User already exists!");
+            res.status(400).send("User already exists!");
         }
 
     } catch (error) {
@@ -63,13 +63,13 @@ const login = async (req, res) => {
 
             if(validate) {
                 const token = jwt.sign({email}, SECRETKEY, { expiresIn: "24h" });
-                res.status(201).json({token, email, message: "Logedin successfully!" });
+                res.status(200).send({token, email, message: "Logedin successfully!" });
             } else {
-                res.send("Incorrect Password!");
+                res.status(401).send("Incorrect Password!");
             }
 
         } else {
-            res.send("Create account first!");
+            res.status(400).send("Create account first!");
         }
 
     } catch (error) {
@@ -89,7 +89,7 @@ const verify = async (req, res) => {
         res.status(200).send({ login: true, data: decoded });
     } catch (error) {
         console.error('Token verification error:', error);
-        res.status(401).send({ login: false, data: "Login unsuccessful" });
+        res.status(400).send({ login: false, data: "Login unsuccessful" });
     }
 };
 

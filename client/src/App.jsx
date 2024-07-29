@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingPage from "./components/Landing-page";
 
 import Form from "./components/Form"
+import DashBoard from "./components/DashBoard";
 
 function App() {
   const router = createBrowserRouter([
@@ -12,6 +13,10 @@ function App() {
     {
       path: "/form",
       element: <Form />
+    },
+    {
+      path : "/dashboard",
+      element: <DashBoard />
     }
   ]);
 

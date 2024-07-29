@@ -4,11 +4,44 @@ import FifthSection from './FifthSection'
 import Footer from './Footer'
 import { useState } from 'react'
 import Navbar from './navbar'
+import SERVER_URL from '../../constants.mjs'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 
 const Form = () => {
 
     const [Sidebar, setSidebar] = useState(false);
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [phoneNo, setPhoneNo] = useState("");
+    const [email, setEmail] = useState("");
+    const [message, setMessage] = useState("");
+
+    const ContactUs = async (e) => {
+        e.preventDefault();
+
+        const res = await fetch(`${SERVER_URL}/contactUs`,
+        {
+            method:"POST",
+            body:JSON.stringify({
+                firstName,
+                lastName,
+                email,
+                phoneNo,
+                message,
+            }),
+            headers: {"Content-type": "application/json; charset=UTF-8",},
+        })
+    
+        if(res.ok) {    
+            console.log("response true");
+            toast.success("Message Sent");
+        } else {
+            console.log("response false");
+            toast.error("Failed to send message!");
+        } 
+    }
 
     return (
         <>
@@ -62,32 +95,63 @@ const Form = () => {
                         <div class='font-medium w-full text-gray-500 text-[17px]  flex flex-col md:flex-row justify-between my-3 text-left'>
                             <div className='border-b-2 flex flex-col w-full'>
                                 <label for="name">FIRST NAME</label>
-                                <input className=' bg-[#FBF6EF] h-9 w-full' type='text' id='name' />
+                                <input 
+                                    className=' bg-[#FBF6EF] h-9 w-full' type='text' id='name' 
+                                    value={firstName}
+                                    onChange={(e) => {
+                                        setFirstName(e.target.value);
+                                    }}
+                                />
                             </div>
                             <div className='md:border-s-2 border-b-2 mt-5 md:mt-0 md:flex md:flex-col w-full'>
                                 <label for="last" className='md:pl-5'>LAST NAME</label>
-                                <input className=' bg-[#FBF6EF] h-9 w-full' type='text' id='last' />
+                                <input 
+                                    className=' bg-[#FBF6EF] h-9 w-full' type='text' id='last' 
+                                    value={lastName}
+                                    onChange={(e) => {
+                                        setLastName(e.target.value);
+                                    }}
+                                />
                             </div>
                         </div>
                         <div class='font-medium text-gray-500 text-[17px] flex flex-col md:flex-row md:my-10 w-full text-left'>
                             <div className='border-b-2 mt-5 w-full'>
                                 <label for="phone" >PHONE NUMBER</label><br />
-                                <input className=' bg-[#FBF6EF] h-9 w-full' type='phone' id='phone' />
+                                <input 
+                                    className=' bg-[#FBF6EF] h-9 w-full' type='phone' id='phone' 
+                                    value={phoneNo}
+                                    onChange={(e) => {
+                                        setPhoneNo(e.target.value);
+                                    }}
+                                />
                             </div>
                             <div className='md:border-s-2 border-b-2 mt-5 md:flex md:flex-col w-full'>
                                 <label for="email"  className='md:pl-5'>EMAIL ADDRESS</label><br />
-                                <input className='bg-[#FBF6EF] h-9 w-full' type='email' id='email' />
+                                <input
+                                    className='bg-[#FBF6EF] h-9 w-full' type='email' id='email' 
+                                    value={email}
+                                    onChange={(e) => {
+                                        setEmail(e.target.value);
+                                    }}
+                                />
                             </div>
                         </div>
                         <div className='font-medium text-gray-500 text-[17px] text-left w-full mt-16 md:mt-16'>
                             <label className='text-left' for="message">ADD YOUR MESSAGE</label><br />
-                            <input className='border-b-2 bg-[#FBF6EF] h-9 w-full' type='text' id='message' />
+                            <input 
+                                className='border-b-2 bg-[#FBF6EF] h-9 w-full' type='text' id='message' 
+                                value={message}
+                                    onChange={(e) => {
+                                        setMessage(e.target.value);
+                                    }}
+                            />
                         </div>
 
 
 
                         <div className='text-left self-start mt-10'>
-                            <button className='border px-7 py-5 bg-[#C9A977] text-white font-bold'>SEND MESSAGE</button>
+                            <button className='border px-7 py-5 bg-[#C9A977] text-white font-bold' onClick={ContactUs}>SEND MESSAGE</button>
+                            <ToastContainer />
                         </div>
 
 

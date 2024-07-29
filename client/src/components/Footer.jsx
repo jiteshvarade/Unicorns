@@ -1,6 +1,49 @@
-import React from 'react';
+import {React, useState} from 'react';
+import SERVER_URL from '../../constants.mjs';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Footer = () => {
+
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+
+    const signUp = async (e) => {
+        e.preventDefault();
+        if(!email || !name || !password) {
+            toast.error("Please fill the required credentials");
+            return
+        }
+        const res = await fetch(`${SERVER_URL}/auth/signUp`,
+        {
+            method:"POST",
+            body:JSON.stringify({
+                name,
+                email,
+                password,
+            }),
+            headers: {"Content-type": "application/json; charset=UTF-8",},
+        })
+
+        const data = await res.json();
+    
+        if(res.status == 200) {    
+            console.log("response true");
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("email", data.email);
+            toast.success("SignUp successfull!");
+            navigate('/dashboard');
+
+        } else if(res.status == 400) {
+            toast.error("Account already exists");
+        } else {
+            console.log("response false");
+            toast.error("Failed to SignUp");
+        } 
+    }
+
     return (
         <footer className="SeventhSection text-white font-Sora bg-black py-10">
             <div className="max-w-[90vw] mx-auto flex flex-col lg:flex-row lg:justify-between md:items-center gap-10">
@@ -66,9 +109,37 @@ const Footer = () => {
 
                 <div className='flex flex-col gap-4 lg:w-[30%]'>
                     <h1 className='font-bold text-lg md:text-xl lg:text-[18px] text-center'>Join Our Newsletter</h1>
-                    <input type="text"  placeholder='Name' className='text-black px-3 py-2 font-semibold text-sm md:text-base placeholder:text-gray-700 rounded'/>
-                    <input type="text" placeholder='Email'className='text-black px-3 py-2 font-semibold text-sm md:text-base placeholder:text-gray-700 rounded'/>
-                    <button className='px-4 py-2 bg-green-900 text-white text-sm md:text-base font-bold rounded'>  SIGN ME UP </button>
+                    <input 
+                        placeholder='Name' 
+                        className='text-black px-3 py-2 font-semibold text-sm md:text-base placeholder:text-gray-700 rounded'
+                        value={name}
+                        onChange={(e) => {
+                            setName(e.target.value);
+                        }}
+                    />
+                    <input
+                        placeholder='Email'
+                        className='text-black px-3 py-2 font-semibold text-sm md:text-base placeholder:text-gray-700 rounded'
+                        value={email}
+                        onChange={(e) => {
+                            setEmail(e.target.value);
+                        }}
+                    />
+                    <input
+                        placeholder='Password'
+                        className='text-black px-3 py-2 font-semibold text-sm md:text-base placeholder:text-gray-700 rounded'
+                        value={password}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                        }}
+                    />
+                    <button 
+                        className='px-4 py-2 bg-green-900 text-white text-sm md:text-base font-bold rounded' 
+                        onClick={signUp} 
+                    > 
+                        SIGN ME UP 
+                    </button>
+                    <ToastContainer />
                 </div>
             </div>
         </footer>
